@@ -47,6 +47,13 @@ def saveMoney(moneyToSave):
 def getValues(summa):
     # принимаем сумму средств игрока и возвращаем список значений с шагом 1/10
     value = []
+    if summa > 9:
+        for i in range(0, 11):
+            value.append(i * (int(summa) // 10))
+    else:
+        value.append(0)
+        if summa > 0:
+            value.append(summa)
 
     return value
 
@@ -197,9 +204,6 @@ stavka03.place(x=280, y=510)
 
 stavka04["state"] = "readonly"
 stavka04.place(x=280, y=540)
-
-
-
 
 
 
