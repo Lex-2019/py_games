@@ -58,6 +58,16 @@ def getValues(summa):
     return value
 
 
+def refreshCombo(eventObject):
+    # Подсчёт оставшейся суммы при ставках
+    summ = summ01.get() + summ02.get() + summ03.get() + summ04.get()
+    labelAllMoney["text"] = f"У Вас на счету: {int(money - summ)} {currency}."
+
+    stavka01["values"] = getValues(int(money - summ02.get() - summ03.get() - summ04.get()))
+    stavka02["values"] = getValues(int(money - summ01.get() - summ03.get() - summ04.get()))
+    stavka03["values"] = getValues(int(money - summ02.get() - summ01.get() - summ04.get()))
+    stavka04["values"] = getValues(int(money - summ02.get() - summ03.get() - summ01.get()))
+
 # создаем переменную (нашего окна), и передаем ей управление библиотекой:
 root = Tk()
 
@@ -204,6 +214,32 @@ stavka03.place(x=280, y=510)
 
 stavka04["state"] = "readonly"
 stavka04.place(x=280, y=540)
+
+# ставки для каждой лошади:
+summ01 = IntVar()  # переменные для хранения ставок
+summ02 = IntVar()
+summ03 = IntVar()
+summ04 = IntVar()
+
+# привязываем переменную к виджету:
+stavka01["textvariable"] = summ01
+stavka02["textvariable"] = summ02
+stavka03["textvariable"] = summ03
+stavka04["textvariable"] = summ04
+
+# при выборе значения из любого Combobox вызываем метод refreshCombo:
+stavka01.bind("<<ComboboxSelected>>", refreshCombo)
+stavka02.bind("<<ComboboxSelected>>", refreshCombo)
+stavka03.bind("<<ComboboxSelected>>", refreshCombo)
+stavka04.bind("<<ComboboxSelected>>", refreshCombo)
+
+refreshCombo("")
+
+stavka01.current(0)
+stavka02.current(0)
+stavka03.current(0)
+stavka04.current(0)
+
 
 
 
