@@ -45,7 +45,10 @@ def saveMoney(moneyToSave):
 
 
 def getValues(summa):
-    # принимаем сумму средств игрока и возвращаем список значений с шагом 1/10
+    """
+    принимаем сумму средств игрока
+    и возвращаем список значений с шагом 1/10 для Combobox
+    """
     value = []
     if summa > 9:
         for i in range(0, 11):
@@ -67,6 +70,28 @@ def refreshCombo(eventObject):
     stavka02["values"] = getValues(int(money - summ01.get() - summ03.get() - summ04.get()))
     stavka03["values"] = getValues(int(money - summ02.get() - summ01.get() - summ04.get()))
     stavka04["values"] = getValues(int(money - summ02.get() - summ03.get() - summ01.get()))
+
+    # включаем/выключаем чекбоксы:
+    if summ01.get() > 0:
+        horse01Game.set(True)
+    else:
+        horse01Game.set(False)
+
+    if summ02.get() > 0:
+        horse02Game.set(True)
+    else:
+        horse02Game.set(False)
+
+    if summ03.get() > 0:
+        horse03Game.set(True)
+    else:
+        horse03Game.set(False)
+
+    if summ04.get() > 0:
+        horse04Game.set(True)
+    else:
+        horse04Game.set(False)
+
 
 # создаем переменную (нашего окна), и передаем ей управление библиотекой:
 root = Tk()
@@ -197,6 +222,12 @@ horse04Game.set(0)
 horseCheck04 = Checkbutton(text=nameHorse04, variable=horse04Game, onvalue=1, offvalue=0)
 horseCheck04.place(x=150, y=538)
 
+# запрещаем пользователю изменять значения чекбоксов
+horseCheck01["state"] = "disabled"
+horseCheck02["state"] = "disabled"
+horseCheck03["state"] = "disabled"
+horseCheck04["state"] = "disabled"
+
 # выпадающий список:
 stavka01 = ttk.Combobox(root)
 stavka02 = ttk.Combobox(root)
@@ -235,7 +266,7 @@ stavka04.bind("<<ComboboxSelected>>", refreshCombo)
 
 refreshCombo("")
 
-stavka01.current(0)
+stavka01.current(0)  # по умолчанию - "0"
 stavka02.current(0)
 stavka03.current(0)
 stavka04.current(0)
