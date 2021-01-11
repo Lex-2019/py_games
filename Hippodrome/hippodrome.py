@@ -71,6 +71,12 @@ def refreshCombo(eventObject):
     stavka03["values"] = getValues(int(money - summ02.get() - summ01.get() - summ04.get()))
     stavka04["values"] = getValues(int(money - summ02.get() - summ03.get() - summ01.get()))
 
+    # включаем или выключаем кнопку 'Старт'
+    if summ > 0:
+        startButton["state"] = "normal"
+    else:
+        startButton["state"] = "disabled"
+
     # включаем/выключаем чекбоксы:
     if summ01.get() > 0:
         horse01Game.set(True)
@@ -91,6 +97,24 @@ def refreshCombo(eventObject):
         horse04Game.set(True)
     else:
         horse04Game.set(False)
+
+
+def runHorse():
+    # при нажатии на кнопку 'Старт':
+    moveHorse()  # НИКОГДА ТАК НЕ ДЕЛАТЬ!!!
+
+
+def moveHorse():
+    global x01, x02, x03, x04
+    # увеличиваем коордтнату Х первой лошади на единицу:
+    x01 += 1
+    horse01.place(x=int(x01), y=20)
+
+    # Если координата < 952 (это расположение поля финиша на изображении),
+    # то заново вызываем метод moveHorse с интервалом в 5 миллисекунд.
+    # (Получается что-то типа рекурсии).
+    if x01 < 952:
+        root.after(5, moveHorse)  # root.after(TIME_MS, METHOD)
 
 
 # создаем переменную (нашего окна), и передаем ей управление библиотекой:
@@ -166,6 +190,7 @@ startButton = Button(text="СТАРТ", font="arial 20", width=61, background="#
 startButton.place(x=20, y=370)
 # где - width - ширина кнопки;
 #     - background - цвет кнопки в 16-ричном представлении
+startButton["state"] = "disabled"  # делаем виджет кнопки 'Старт' неактивным
 
 # Информационный чат
 textDiary = Text(width=70, height=8, wrap=WORD)  # wrap - перенос строки по словам
@@ -272,7 +297,10 @@ stavka03.current(0)
 stavka04.current(0)
 
 
-
+# УДАЛИТЬ
+stavka01.current(1)
+refreshCombo("")
+startButton["command"] = runHorse
 
 # Выводим главное окно на экран:
 root.mainloop()
