@@ -122,10 +122,10 @@ def moveHorse():
     speed04 = randint(3, 10) / 10
 
     # увеличиваем коордтнату Х лошадей:
-    x01 += speed01
-    x02 += speed02
-    x03 += speed03
-    x04 += speed04
+    x01 += (speed01 * randint(1, (7 - state01))) / state01
+    x02 += (speed02 * randint(1, (7 - state02))) / state02
+    x03 += (speed03 * randint(1, (7 - state03))) / state03
+    x04 += (speed04 * randint(1, (7 - state04))) / state04
 
     horsePlaceInWindow()
 
@@ -293,13 +293,13 @@ stavka03.place(x=280, y=510)
 stavka04["state"] = "readonly"
 stavka04.place(x=280, y=540)
 
-# ставки для каждой лошади:
+# ставки для каждой лошади (значения из Combobox):
 summ01 = IntVar()  # переменные для хранения ставок
 summ02 = IntVar()
 summ03 = IntVar()
 summ04 = IntVar()
 
-# привязываем переменную к виджету:
+# привязываем переменную к виджету Combobox:
 stavka01["textvariable"] = summ01
 stavka02["textvariable"] = summ02
 stavka03["textvariable"] = summ03
@@ -311,8 +311,10 @@ stavka02.bind("<<ComboboxSelected>>", refreshCombo)
 stavka03.bind("<<ComboboxSelected>>", refreshCombo)
 stavka04.bind("<<ComboboxSelected>>", refreshCombo)
 
+# обновляем значения Combobox:
 refreshCombo("")
 
+# устанавливаем самое первое значение списка:
 stavka01.current(0)  # по умолчанию - "0"
 stavka02.current(0)
 stavka03.current(0)
@@ -325,6 +327,13 @@ refreshCombo("")
 
 startButton["command"] = runHorse
 
+# Состояние лошадей:
+# 1 - великолепно!
+# 5 - ужасно больна
+state01 = randint(1, 5)
+state02 = randint(1, 5)
+state03 = randint(1, 5)
+state04 = randint(1, 5)
 
 # Выводим главное окно на экран:
 root.mainloop()
