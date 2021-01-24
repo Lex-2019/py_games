@@ -1,6 +1,7 @@
 from tkinter import *
 from tkinter import messagebox  # формирование отдельного окна с надписью и кнопкой "ОК"
 from tkinter import ttk  # выпадающий список
+from random import randint  # теперь вместо random.randint(x, y) можно писать просто randint(x, y)
 
 # ************************************************************
 # Отсюда будем писать методы и функции
@@ -100,20 +101,41 @@ def refreshCombo(eventObject):
 
 
 def runHorse():
-    # при нажатии на кнопку 'Старт':
-    moveHorse()  # НИКОГДА ТАК НЕ ДЕЛАТЬ!!!
+    # при нажатии на кнопку 'Старт' (запрещаем пользователю изменения при забеге):
+    global money
+    startButton["state"] = "disabled"
+    stavka01["state"] = "disabled"
+    stavka02["state"] = "disabled"
+    stavka03["state"] = "disabled"
+    stavka04["state"] = "disabled"
+    money -= summ01.get() + summ02.get() + summ03.get() + summ04.get()
+    moveHorse()
 
 
 def moveHorse():
+    # Движение лошади
     global x01, x02, x03, x04
-    # увеличиваем коордтнату Х первой лошади на единицу:
-    x01 += 1
-    horse01.place(x=int(x01), y=20)
+
+    speed01 = randint(3, 10) / 10
+    speed02 = randint(3, 10) / 10
+    speed03 = randint(3, 10) / 10
+    speed04 = randint(3, 10) / 10
+
+    # увеличиваем коордтнату Х лошадей:
+    x01 += speed01
+    x02 += speed02
+    x03 += speed03
+    x04 += speed04
+
+    horsePlaceInWindow()
 
     # Если координата < 952 (это расположение поля финиша на изображении),
     # то заново вызываем метод moveHorse с интервалом в 5 миллисекунд.
     # (Получается что-то типа рекурсии).
-    if x01 < 952:
+    if (x01 < 952 and
+       x02 < 952 and
+       x03 < 952 and
+       x04 < 952):
         root.after(5, moveHorse)  # root.after(TIME_MS, METHOD)
 
 
@@ -300,7 +322,9 @@ stavka04.current(0)
 # УДАЛИТЬ
 stavka01.current(1)
 refreshCombo("")
+
 startButton["command"] = runHorse
+
 
 # Выводим главное окно на экран:
 root.mainloop()
