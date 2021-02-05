@@ -139,6 +139,31 @@ def moveHorse():
         root.after(5, moveHorse)  # root.after(TIME_MS, METHOD)
 
 
+def viewWeather():
+    # о погоде в чате
+    s = "Сейчас на ипподроме "
+    if timeDay == 1:
+        s += "ночь, "
+    elif timeDay == 2:
+        s += "утро, "
+    elif timeDay == 3:
+        s += "день, "
+    elif timeDay == 4:
+        s += "вечер, "
+
+    if weather == 1:
+        s += "льёт сильный дождь."
+    elif weather == 2:
+        s += "моросит дождик."
+    elif weather == 3:
+        s += "облачно, на горизонте тучи."
+    elif weather == 4:
+        s += "безоблачно, ветер."
+    elif weather == 5:
+        s += "безоблачно, прекрасная погода!"
+    insertText(s)
+
+
 # создаем переменную (нашего окна), и передаем ей управление библиотекой:
 root = Tk()
 
@@ -166,6 +191,12 @@ nameHorse04 = "Прожорливый"
 currency = "руб."
 money = 0
 defaultMoney = 10000
+
+# погода (1 - ливень, ураган; 5 - ясная погода)
+weather = randint(1, 5)
+
+# время суток (1 - ночь, 2 - утро, 3 - день, 4 - вечер)
+timeDay = randint(1, 4)
 
 # ************************************************************
 # Отсюда организуем формирование элементов в окне
@@ -334,6 +365,8 @@ state01 = randint(1, 5)
 state02 = randint(1, 5)
 state03 = randint(1, 5)
 state04 = randint(1, 5)
+
+viewWeather()
 
 # Выводим главное окно на экран:
 root.mainloop()
