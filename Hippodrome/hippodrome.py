@@ -164,6 +164,32 @@ def viewWeather():
     insertText(s)
 
 
+def getHealth(name, state, win):
+    # сюда отправляем имя, состояние и коэф.выигрыша каждой лошади
+    s = f"Лошадь {name} "
+    if state == 5:
+        s += "мучается несварением желудка."
+    elif state == 4:
+        s += "плохо спала. Подёргивается веко."
+    elif state == 3:
+        s += "сурова и беспощадна."
+    elif state == 2:
+        s += "в отличном настроении, покушала хорошо."
+    elif state == 1:
+        s += "просто ракета!"
+
+    s += f" ({win}:1)"
+    return s
+
+
+def healthHorse():
+    # выводим в чат строку о лошадях
+    insertText(getHealth(nameHorse01, state01, winCoeff01))
+    insertText(getHealth(nameHorse02, state02, winCoeff02))
+    insertText(getHealth(nameHorse03, state03, winCoeff03))
+    insertText(getHealth(nameHorse04, state04, winCoeff04))
+
+
 # создаем переменную (нашего окна), и передаем ей управление библиотекой:
 root = Tk()
 
@@ -355,7 +381,6 @@ stavka04.current(0)
 # УДАЛИТЬ
 stavka01.current(1)
 refreshCombo("")
-
 startButton["command"] = runHorse
 
 # Состояние лошадей:
@@ -366,13 +391,13 @@ state03 = randint(1, 5)
 state04 = randint(1, 5)
 
 # коэффициент выигрышана основе показателя здоровья лошади
-# (чем ниже показатель stateXX тем ниже коэф. выигрыша)
 winCoeff01 = int(100 + randint(1, 30 + state01 * 60)) / 100
 winCoeff02 = int(100 + randint(1, 30 + state02 * 60)) / 100
 winCoeff03 = int(100 + randint(1, 30 + state03 * 60)) / 100
 winCoeff04 = int(100 + randint(1, 30 + state04 * 60)) / 100
 
 viewWeather()
+healthHorse()
 
 # Выводим главное окно на экран:
 root.mainloop()
