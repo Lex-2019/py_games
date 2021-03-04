@@ -112,20 +112,105 @@ def runHorse():
     moveHorse()
 
 
+def problemHorse():
+    # случайное событие неправильного поведения лошадей
+    global reverse01, reverse02, reverse03, reverse04
+    global play01, play02, play03, play04
+    global fastSpeed01, fastSpeed02, fastSpeed03, fastSpeed04
+
+    # выбираем лошадь для события
+    horse = randint(1, 4)
+    # чем выше число, тем ниже вероятность события
+    maxRand = 10000
+    if horse == 1 and play01 == True and x01 > 0:
+        if randint(0, maxRand) < (state01 * 5):
+            # маркер движения в обратный:
+            reverse01 = not reverse01
+            # сообщение пользователю в чате:
+            messagebox.showinfo("Аааааа!", f"Лошадь {nameHorse01} развернулась и бежит в другую сторону!")
+        elif randint(0, maxRand) < (state01 * 5):
+            # лошадь остановилась
+            play01 = False
+            messagebox.showinfo("Никогда такого не было и вот опять ", f"{nameHorse01} заржала и скинула жокея!")
+        elif randint(0, maxRand) < (state01 * 5) and not fastSpeed01:
+            messagebox.showinfo("Великолепно! ", f"{nameHorse01} перестал притворяться и ускорился!")
+            # лошадь ускоряется
+            fastSpeed01 = True
+    elif horse == 2 and play02 == True and x02 > 0:
+        if randint(0, maxRand) < (state02 * 5):
+            reverse02 = not reverse02
+            messagebox.showinfo("Аааааа!", f"Лошадь {nameHorse02} развернулась и бежит в другую сторону!")
+        elif randint(0, maxRand) < (state02 * 5):
+            play02 = False
+            messagebox.showinfo("Никогда такого не было и вот опять ", f"{nameHorse02} заржала и скинула жокея!")
+        elif randint(0, maxRand) < (state02 * 5) and not fastSpeed02:
+            messagebox.showinfo("Великолепно! ", f"{nameHorse02} перестал притворяться и ускорился!")
+            # лошадь ускоряется
+            fastSpeed02 = True
+    elif horse == 3 and play03 == True and x03 > 0:
+        if randint(0, maxRand) < (state03 * 5):
+            reverse03 = not reverse03
+            messagebox.showinfo("Аааааа!", f"Лошадь {nameHorse03} развернулась и бежит в другую сторону!")
+        elif randint(0, maxRand) < (state03 * 5):
+            play03 = False
+            messagebox.showinfo("Никогда такого не было и вот опять ", f"{nameHorse03} заржала и скинула жокея!")
+        elif randint(0, maxRand) < (state03 * 5) and not fastSpeed03:
+            messagebox.showinfo("Великолепно! ", f"{nameHorse03} перестал притворяться и ускорился!")
+            # лошадь ускоряется
+            fastSpeed03 = True
+    elif horse == 4 and play04 == True and x04 > 0:
+        if randint(0, maxRand) < (state04 * 5):
+            reverse04 = not reverse04
+            messagebox.showinfo("Аааааа!", f"Лошадь {nameHorse04} развернулась и бежит в другую сторону!")
+        elif randint(0, maxRand) < (state04 * 5):
+            play04 = False
+            messagebox.showinfo("Никогда такого не было и вот опять ", f"{nameHorse04} заржала и скинула жокея!")
+        elif randint(0, maxRand) < (state04 * 5) and not fastSpeed01:
+            messagebox.showinfo("Великолепно! ", f"{nameHorse04} перестал притворяться и ускорился!")
+            # лошадь ускоряется
+            fastSpeed04 = True
+
+
 def moveHorse():
     # Движение лошади
     global x01, x02, x03, x04
 
-    speed01 = randint(3, 10) / 10
-    speed02 = randint(3, 10) / 10
-    speed03 = randint(3, 10) / 10
-    speed04 = randint(3, 10) / 10
+    # вызов метода problemHorse() с вероятностью в 20%:
+    if randint(0, 100) < 20:
+        problemHorse()
 
-    # увеличиваем коордтнату Х лошадей:
-    x01 += (speed01 * randint(1, (7 - state01))) / state01
-    x02 += (speed02 * randint(1, (7 - state02))) / state02
-    x03 += (speed03 * randint(1, (7 - state03))) / state03
-    x04 += (speed04 * randint(1, (7 - state04))) / state04
+    speed01 = (randint(1, timeDay + weather) + randint(1, int(7 - state01) * 3)) / randint(10, 175)
+    speed02 = (randint(1, timeDay + weather) + randint(1, int(7 - state02) * 3)) / randint(10, 175)
+    speed03 = (randint(1, timeDay + weather) + randint(1, int(7 - state03) * 3)) / randint(10, 175)
+    speed04 = (randint(1, timeDay + weather) + randint(1, int(7 - state04) * 3)) / randint(10, 175)
+
+    multiple = 3
+    speed01 *= int(randint(1, 2 + state01) * (1 + fastSpeed01 * multiple))
+    speed02 *= int(randint(1, 2 + state02) * (1 + fastSpeed02 * multiple))
+    speed03 *= int(randint(1, 2 + state03) * (1 + fastSpeed03 * multiple))
+    speed04 *= int(randint(1, 2 + state04) * (1 + fastSpeed04 * multiple))
+
+    # вправо или влево бежит лошадь:
+    if play01:
+        if not reverse01:
+            x01 += speed01
+        else:
+            x01 -= speed01
+    if play02:
+        if not reverse02:
+            x02 += speed02
+        else:
+            x02 -= speed02
+    if play03:
+        if not reverse03:
+            x03 += speed03
+        else:
+            x03 -= speed03
+    if play04:
+        if not reverse04:
+            x04 += speed04
+        else:
+            x04 -= speed04
 
     horsePlaceInWindow()
 
@@ -212,6 +297,23 @@ nameHorse01 = "Хлыст"
 nameHorse02 = "Бродяга"
 nameHorse03 = "Халкер"
 nameHorse04 = "Прожорливый"
+
+# маркеры ситуаций:
+# отвечает за направление лошади
+reverse01 = False
+reverse02 = False
+reverse03 = False
+reverse04 = False
+# перемещается ли лошадь?
+play01 = True
+play02 = True
+play03 = True
+play04 = True
+# ускорение лошади
+fastSpeed01 = False
+fastSpeed02 = False
+fastSpeed03 = False
+fastSpeed04 = False
 
 # финансовые показатели
 currency = "руб."
