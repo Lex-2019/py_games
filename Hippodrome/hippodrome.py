@@ -108,6 +108,7 @@ def runHorse():
     stavka02["state"] = "disabled"
     stavka03["state"] = "disabled"
     stavka04["state"] = "disabled"
+    # со средств списывается сумма ставки:
     money -= summ01.get() + summ02.get() + summ03.get() + summ04.get()
     moveHorse()
 
@@ -179,6 +180,7 @@ def moveHorse():
     if randint(0, 100) < 20:
         problemHorse()
 
+    # hfcxbnsdftv crjhjcnm lkz rf;ljq kjiflb
     speed01 = (randint(1, timeDay + weather) + randint(1, int(7 - state01) * 3)) / randint(10, 175)
     speed02 = (randint(1, timeDay + weather) + randint(1, int(7 - state02) * 3)) / randint(10, 175)
     speed03 = (randint(1, timeDay + weather) + randint(1, int(7 - state03) * 3)) / randint(10, 175)
@@ -214,6 +216,14 @@ def moveHorse():
 
     horsePlaceInWindow()
 
+    # текущая ситуация
+    allPlay = play01 or play02 or play03 or play04  # проверяем движется ли лошадь
+    allX = x01 < 0 and x02 < 0 and x03 < 0 and x04 < 0  # лошади за пределами окна
+    allReverse = reverse01 and reverse02 and reverse03 and reverse04  # бегут ли лошади назад
+    if not allPlay or allX or allReverse:  # если выполняются следующие условия
+        winRound(0)                        # вызвать метод... и передать аргумент...
+        return 0                           # прекратить выполнение метода moveHorse()
+
     # Если координата < 952 (это расположение поля финиша на изображении),
     # то заново вызываем метод moveHorse с интервалом в 5 миллисекунд.
     # (Получается что-то типа рекурсии).
@@ -222,6 +232,15 @@ def moveHorse():
        x03 < 952 and
        x04 < 952):
         root.after(5, moveHorse)  # root.after(TIME_MS, METHOD)
+    else:
+        if x01 >= 952:
+            winRound(1)
+        elif x02 >= 952:
+            winRound(2)
+        elif x03 >= 952:
+            winRound(3)
+        elif x04 >= 952:
+            winRound(4)
 
 
 def viewWeather():
@@ -273,6 +292,112 @@ def healthHorse():
     insertText(getHealth(nameHorse02, state02, winCoeff02))
     insertText(getHealth(nameHorse03, state03, winCoeff03))
     insertText(getHealth(nameHorse04, state04, winCoeff04))
+
+
+def setupHorse():
+    # установка состояния лошадей и погоды на предстартовый уровень
+    # (можно всё загнать в метод, в том числе при первом запуске!)
+    global state01, state02, state03, state04
+    global weather, timeDay
+    global winCoeff01, winCoeff02, winCoeff03, winCoeff04
+    global play01, play02, play03, play04
+    global reverse01, reverse02, reverse03, reverse04
+    global fastSpeed01, fastSpeed02, fastSpeed03, fastSpeed04
+
+    weather = randint(1, 5)
+    timeDay = randint(1, 4)
+
+    state01 = randint(1, 5)
+    state02 = randint(1, 5)
+    state03 = randint(1, 5)
+    state04 = randint(1, 5)
+
+    winCoeff01 = int(100 + randint(1, 30 + state01 * 60)) / 100
+    winCoeff02 = int(100 + randint(1, 30 + state02 * 60)) / 100
+    winCoeff03 = int(100 + randint(1, 30 + state03 * 60)) / 100
+    winCoeff04 = int(100 + randint(1, 30 + state04 * 60)) / 100
+
+    # маркеры ситуаций:
+    reverse01 = False
+    reverse02 = False
+    reverse03 = False
+    reverse04 = False
+
+    play01 = True
+    play02 = True
+    play03 = True
+    play04 = True
+
+    fastSpeed01 = False
+    fastSpeed02 = False
+    fastSpeed03 = False
+    fastSpeed04 = False
+
+
+def winRound(horse):
+    # победа лошади
+    global x01, x02, x03, x04, money
+
+    res = "К финишу пришла лошадь "  # res - результат
+    if horse == 1:
+        res += nameHorse01
+        win = summ01.get() * winCoeff01
+    elif horse == 2:
+        res += nameHorse02
+        win = summ02.get() * winCoeff02
+    elif horse == 3:
+        res += nameHorse03
+        win = summ03.get() * winCoeff03
+    elif horse == 4:
+        res += nameHorse04
+        win = summ04.get() * winCoeff04
+
+    if horse > 0:
+        res += f"! Вы выиграли {int(win)} {currency}. "
+        if win > 0:
+            res += "Поздравляем! Средства уже зачислены на Ваш счёт!"
+            insertText(f"Этот забег принёс Вам {int(win)} {currency}.")
+        else:
+            res += "К сожалению, Ваша лошадь была неправильной. Попробуйте ещё раз!"
+            insertText("Делайте ставку! Увеличивайте прибыль!")
+        messagebox.showinfo("РЕЗУЛЬТАТ", res)
+    else:
+        messagebox.showinfo("Всё плохо", "До финиша не дошёл никто.\
+        Забег признан несостоявшимся. Все ставки возвращены.")
+        win = summ01.get() + summ02.get() + summ03.get() + summ04.get()
+
+    money += win
+    saveMoney(int(money))
+
+    # сброс переменных
+    setupHorse()
+
+    # сбрасываем виджеты (можно оформить отдельным методом)
+    startButton["state"] = "normal"
+    stavka01["state"] = "readonly"
+    stavka02["state"] = "readonly"
+    stavka03["state"] = "readonly"
+    stavka04["state"] = "readonly"
+    stavka01.current(0)
+    stavka02.current(0)
+    stavka03.current(0)
+    stavka04.current(0)
+
+    # сбрасываем координаты на начальные и перерисовываем методом horsePlaceInWindow()
+    x01 = 20
+    x02 = 20
+    x03 = 20
+    x04 = 20
+    horsePlaceInWindow()
+
+    # обновляем интерфейс
+    refreshCombo(eventObject="")  # Обновляет выпадающие списки и чекбоксы
+    viewWeather()
+    healthHorse()
+    insertText(f"Ваши средства: {int(money)} {currency}.")
+    if money < 1:
+        messagebox.showinfo("Стоп!", "На ипподром без средств заходить нельзя!")
+        quit(0)
 
 
 # создаем переменную (нашего окна), и передаем ей управление библиотекой:
@@ -479,10 +604,6 @@ stavka02.current(0)
 stavka03.current(0)
 stavka04.current(0)
 
-
-# УДАЛИТЬ
-stavka01.current(1)
-refreshCombo("")
 startButton["command"] = runHorse
 
 # Состояние лошадей:
