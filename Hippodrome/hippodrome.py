@@ -451,6 +451,19 @@ weather = randint(1, 5)
 # время суток (1 - ночь, 2 - утро, 3 - день, 4 - вечер)
 timeDay = randint(1, 4)
 
+# Состояние лошадей:
+# (1 - великолепно, 5 - ужасно больна)
+state01 = randint(1, 5)
+state02 = randint(1, 5)
+state03 = randint(1, 5)
+state04 = randint(1, 5)
+
+# коэффициент выигрышана основе показателя здоровья лошади
+winCoeff01 = int(100 + randint(1, 30 + state01 * 60)) / 100
+winCoeff02 = int(100 + randint(1, 30 + state02 * 60)) / 100
+winCoeff03 = int(100 + randint(1, 30 + state03 * 60)) / 100
+winCoeff04 = int(100 + randint(1, 30 + state04 * 60)) / 100
+
 # ************************************************************
 # Отсюда организуем формирование элементов в окне
 # ************************************************************
@@ -604,20 +617,8 @@ stavka02.current(0)
 stavka03.current(0)
 stavka04.current(0)
 
+# назначаем метод выполняющийся при нажатии на кнопку "СТАРТ"
 startButton["command"] = runHorse
-
-# Состояние лошадей:
-# (1 - великолепно, 5 - ужасно больна)
-state01 = randint(1, 5)
-state02 = randint(1, 5)
-state03 = randint(1, 5)
-state04 = randint(1, 5)
-
-# коэффициент выигрышана основе показателя здоровья лошади
-winCoeff01 = int(100 + randint(1, 30 + state01 * 60)) / 100
-winCoeff02 = int(100 + randint(1, 30 + state02 * 60)) / 100
-winCoeff03 = int(100 + randint(1, 30 + state03 * 60)) / 100
-winCoeff04 = int(100 + randint(1, 30 + state04 * 60)) / 100
 
 viewWeather()
 healthHorse()
